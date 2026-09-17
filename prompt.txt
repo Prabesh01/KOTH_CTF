@@ -1,0 +1,5 @@
+<KOTH_CTF main branch zip file attatched>
+
+can we alter the https://github.com/BakerWomack/KOTH_CTF to make services and machines defendable for players. and move it to the https://netkoth.org/ format with a system to check tags/labels to see who has access. instead of static flag. 
+
+because, BakerWomack/KOTH_CTF is way straight forward and easier to create challenges and easy to maintain. 

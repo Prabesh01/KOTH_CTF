@@ -72,6 +72,10 @@ COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
 # Expose ports
+# --- KotH tag target. This file is intentionally writable by whoever
+# controls this box (that's the game) -- but nothing running IN this
+# container ever reports its contents. See reporter-sidecar/. ---
+RUN mkdir -p /opt/koth && echo "unclaimed" > /opt/koth/tag && chmod 666 /opt/koth/tag
 EXPOSE 80 22
 
 # Start services

@@ -2,10 +2,10 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                <h2 class="mb-0"><i class="fas fa-trophy"></i> Scoreboard</h2>
+                <h2 class="mb-0"><i class="fas fa-trophy"></i> Leaderboard</h2>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -13,28 +13,21 @@
                         <thead>
                             <tr>
                                 <th><i class="fas fa-hashtag"></i> Rank</th>
-                                <th><i class="fas fa-user"></i> Username</th>
+                                <th><i class="fas fa-users"></i> Team</th>
                                 <th><i class="fas fa-star"></i> Points</th>
-                                <th><i class="fas fa-flag"></i> Flags Solved</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for user in users %}
+                            {% for team in teams %}
                             <tr>
                                 <td>
-                                    {% if loop.index == 1 %}
-                                        <i class="fas fa-crown text-warning"></i>
-                                    {% elif loop.index == 2 %}
-                                        <i class="fas fa-medal text-secondary"></i>
-                                    {% elif loop.index == 3 %}
-                                        <i class="fas fa-medal text-danger"></i>
-                                    {% else %}
-                                        {{ loop.index }}
-                                    {% endif %}
+                                    {% if loop.index == 1 %}<i class="fas fa-crown text-warning"></i>
+                                    {% elif loop.index == 2 %}<i class="fas fa-medal text-secondary"></i>
+                                    {% elif loop.index == 3 %}<i class="fas fa-medal text-danger"></i>
+                                    {% else %}{{ loop.index }}{% endif %}
                                 </td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.points }}</td>
-                                <td>{{ user.get_solved_flags()|length }}</td>
+                                <td>{{ team.name }}</td>
+                                <td>{{ team.points }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -43,60 +36,35 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0"><i class="fas fa-mountain"></i> Current Hill Status</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Points accrue every poll interval to whoever currently holds each machine. This updates automatically -- no submission needed.</p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr><th>Machine</th><th>Held by</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for machine, team_name in holdings.items() %}
+                        <tr>
+                            <td>{{ machine }}</td>
+                            <td>
+                                {% if team_name %}
+                                    <span class="badge bg-success">{{ team_name }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">unclaimed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<style>
-:root {
-    --main: rgb(44, 62, 80);
-    --main-light: rgb(52, 73, 94);
-    --main-dark: rgb(36, 50, 65);
-}
-
-.card {
-    border: none;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-    background-color: var(--main);
-    color: white;
-    border-bottom: none;
-}
-
-.table {
-    margin-bottom: 0;
-}
-
-.table thead th {
-    background-color: var(--main-light);
-    color: white;
-    border: none;
-    padding: 15px;
-}
-
-.table tbody td {
-    padding: 15px;
-    vertical-align: middle;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(44, 62, 80, 0.05);
-}
-
-.table-striped tbody tr:hover {
-    background-color: rgba(44, 62, 80, 0.1);
-}
-
-.fa-crown {
-    color: #FFD700 !important;
-}
-
-.fa-medal.text-secondary {
-    color: #C0C0C0 !important;
-}
-
-.fa-medal.text-danger {
-    color: #CD7F32 !important;
-}
-</style>
-{% endblock %} 
+{% endblock %}

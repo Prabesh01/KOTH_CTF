@@ -1,7 +1,7 @@
 declare -x OVPN_AUTH=
 declare -x OVPN_CIPHER=
 declare -x OVPN_CLIENT_TO_CLIENT=
-declare -x OVPN_CN=127.0.0.1
+declare -x OVPN_CN=192.168.101.11
 declare -x OVPN_COMP_LZO=0
 declare -x OVPN_DEFROUTE=1
 declare -x OVPN_DEVICE=tun
@@ -22,5 +22,5 @@ declare -x OVPN_PUSH=()
 declare -x OVPN_ROUTES=([0]="192.168.254.0/24")
 declare -x OVPN_SERVER=10.8.0.0/24
 declare -x OVPN_SERVER_CN=localhost
-declare -x OVPN_SERVER_URL=udp://127.0.0.1:1194
+declare -x OVPN_SERVER_URL=udp://192.168.101.11:1194
 declare -x OVPN_TLS_CIPHER=

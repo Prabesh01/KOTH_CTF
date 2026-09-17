@@ -42,6 +42,10 @@ RUN echo "FLAG{Kahn_JR_I_DONT_HEAR_ANY_BEAUTIFUL_MUSIC}" > /root/root.txt
 RUN echo "FLAG{WHO_IS_DERK_WHAT_IS_A_RAPID_RELEASE_SUPPLEMENT_WHERE_IS_YOUR_PUMP_AND_WHY_IS_DERK_TRYING_TO_MAX_IT}" > /flag.txt
 
 # Expose ports 80 (main service) and 8080 (hidden King of the Hill service)
+# --- KotH tag target. This file is intentionally writable by whoever
+# controls this box (that's the game) -- but nothing running IN this
+# container ever reports its contents. See reporter-sidecar/. ---
+RUN mkdir -p /opt/koth && echo "unclaimed" > /opt/koth/tag && chmod 666 /opt/koth/tag
 EXPOSE 80 8080 22
 
 # Start with custom script

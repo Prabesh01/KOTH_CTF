@@ -1,0 +1,9 @@
+[
+  {"name": "begin",        "ip": "172.20.1.8",   "port": 9001, "points": 1},
+  {"name": "sqli",         "ip": "172.20.1.10",  "port": 9001, "points": 2},
+  {"name": "ubuntu_ssh",   "ip": "172.20.1.63",  "port": 9001, "points": 1},
+  {"name": "shellshock",   "ip": "172.20.1.215", "port": 9001, "points": 1},
+  {"name": "ghostcat",     "ip": "172.20.1.189", "port": 9001, "points": 2},
+  {"name": "upload",       "ip": "172.20.1.213", "port": 9001, "points": 1},
+  {"name": "arlenservice", "ip": "172.20.1.20",  "port": 9001, "points": 2}
+]

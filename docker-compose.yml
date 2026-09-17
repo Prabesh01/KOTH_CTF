@@ -6,9 +6,20 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - begin_koth_tag:/opt/koth
     networks:
       ctf_network:
         ipv4_address: 172.20.0.8
+  begin-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - begin_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.8
+
   # Machine 2 - SQL Injection
   sqli:
     build:
@@ -16,9 +27,19 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - sqli_koth_tag:/opt/koth
     networks:
       ctf_network:
         ipv4_address: 172.20.0.10
+  sqli-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - sqli_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.10
 
   # Machine 3 - Ubuntu with multiple SSH ports
   ubuntu_ssh:
@@ -27,9 +48,19 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - ubuntu_ssh_koth_tag:/opt/koth
     networks:
       ctf_network:
         ipv4_address: 172.20.0.63
+  ubuntu_ssh-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - ubuntu_ssh_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.63
 
   # Machine 4 - Shellshock vulnerability
   shellshock:
@@ -38,9 +69,19 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - shellshock_koth_tag:/opt/koth
     networks:
       ctf_network:
         ipv4_address: 172.20.0.215
+  shellshock-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - shellshock_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.215
 
   # Machine 5 - Ghostcat vulnerable Tomcat
   ghostcat:
@@ -49,11 +90,21 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - ghostcat_koth_tag:/opt/koth
     networks:
       ctf_network:
         ipv4_address: 172.20.0.189
       hidden_network:
         ipv4_address: 192.168.100.10
+  ghostcat-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - ghostcat_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.189
 
   # Machine 6 - Upload php vulnerable
   upload:
@@ -62,9 +113,19 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - upload_koth_tag:/opt/koth
     networks:
       ctf_network:
         ipv4_address: 172.20.0.213
+  upload-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - upload_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.213
 
   # Machine 7 - Arlen Service Center (Hidden Network)
   arlenservice:
@@ -73,9 +134,22 @@ services:
       dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
+    volumes:
+      - arlenservice_koth_tag:/opt/koth
     networks:
       hidden_network:
         ipv4_address: 192.168.100.20
+  # Reporter sits on ctf_network (not hidden_network) purely so ScoreBot
+  # can reach it without extra routing -- isolation comes from the volume
+  # + minimal image, not from which network segment it's on.
+  arlenservice-reporter:
+    build:
+      context: ./reporter-sidecar
+    volumes:
+      - arlenservice_koth_tag:/opt/koth
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.1.20
 
   # OpenVPN Server
   openvpn:
@@ -107,11 +181,30 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./scoreboard/data:/app/data
-      - ./scoreboard/flags.txt:/app/flags.txt
+      - ./scoreboard:/app
+      - ./client_configs:/app/client_configs
+    environment:
+      - SCOREBOT_SECRET=${SCOREBOT_SECRET:-change-me-scorebot-secret}
     networks:
       ctf_network:
         ipv4_address: 172.20.0.251
+
+  # ScoreBot -- polls every machine's REPORTER SIDECAR (never the vulnbox
+  # itself) and reports holdings to the scoreboard. Never publishes a
+  # port -- it's a poller, not a service anyone should be able to reach.
+  scorebot:
+    build:
+      context: ./scorebot
+      dockerfile: Dockerfile
+    depends_on:
+      - scoreboard
+    environment:
+      - SCOREBOARD_URL=http://scoreboard:8000
+      - SCOREBOT_SECRET=${SCOREBOT_SECRET:-change-me-scorebot-secret}
+      - POLL_INTERVAL=30
+    networks:
+      ctf_network:
+        ipv4_address: 172.20.0.252
 
 networks:
   ctf_network:
@@ -128,3 +221,10 @@ networks:
 volumes:
   scoreboard_data:
   vpn_data:
+  begin_koth_tag:
+  sqli_koth_tag:
+  ubuntu_ssh_koth_tag:
+  shellshock_koth_tag:
+  ghostcat_koth_tag:
+  upload_koth_tag:
+  arlenservice_koth_tag:
