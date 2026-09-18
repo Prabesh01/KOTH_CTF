@@ -22,12 +22,8 @@ RUN sqlite3 /var/www/html/database.sqlite "CREATE TABLE users (id INTEGER PRIMAR
     sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('john_redcorn', 'massage');" && \
     sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('rainey', 'texas_state');" && \
     sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('nancy', 'weather_girl');" && \
-    sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('strickland', 'propane123');" && \
-    sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('propane_tech', 'sweetlady');" && \
-    sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('mechanic', 'automotive');" && \
-    sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('admin', 'FLAG{propane_accessories_are_the_best}');"
+    sqlite3 /var/www/html/database.sqlite "INSERT INTO users (username, password) VALUES ('admin', 'propane_accessories_are_the_best');"
 
-RUN echo "FLAG{cron_job_vulnerability}" > /root/flag.txt
 # Create system users corresponding to database entries
 RUN useradd -m -s /bin/bash rainey && echo 'rainey:texas_state' | chpasswd && \
     useradd -m -s /bin/bash nancy && echo 'nancy:weather_girl' | chpasswd && \
@@ -50,15 +46,6 @@ RUN usermod -a -G users rainey && \
 
 # Set up the cron job to run every minute as root
 RUN echo '* * * * * root /usr/local/bin/backup_logs.sh' >> /etc/crontab
-
-# Copy flags directory and randomly place image in a user's home
-COPY flags/ /tmp/flags/
-RUN /bin/bash -c 'USERS=("rainey" "nancy" "john_redcorn") && \
-    RANDOM_USER=${USERS[$RANDOM % ${#USERS[@]}]} && \
-    cp /tmp/flags/*.jpg /home/$RANDOM_USER/ && \
-    chown $RANDOM_USER:$RANDOM_USER /home/$RANDOM_USER/*.jpg'
-
-RUN echo "FLAG{MY_SWEET_NAN_NAN}" > /home/john_redcorn/flag.txt
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html && \

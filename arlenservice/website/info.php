@@ -28,14 +28,6 @@ echo "<p><strong>🎉 Congratulations!</strong> You've successfully accessed the
 echo "<p>This network is only accessible by configuring an additional network adapter on the ghostcat machine.</p>";
 echo "</div>";
 
-echo "<h3>Available Flags:</h3>";
-if (file_exists('/var/www/html/service_flag.txt')) {
-    $flag_content = file_get_contents('/var/www/html/service_flag.txt');
-    echo "<div style='background: #e74c3c; color: white; padding: 15px; border-radius: 5px; margin: 10px 0; text-align: center; font-size: 18px; font-weight: bold;'>";
-    echo htmlspecialchars($flag_content);
-    echo "</div>";
-}
-
 echo "</div>";
 
 echo "<div style='margin-top: 20px; text-align: center;'>";

@@ -35,24 +35,13 @@ RUN echo '#!/bin/bash' > /usr/lib/cgi-bin/reservations.cgi && \
     echo 'echo "</body></html>"' >> /usr/lib/cgi-bin/reservations.cgi && \
     chmod +x /usr/lib/cgi-bin/reservations.cgi
 
-RUN echo "FLAG{suids_are_fun}" > /root/flag.txt
 # Create additional King of the Hill themed users
 RUN useradd -m -s /bin/bash boomhauer && echo 'boomhauer:dang_ol_man' | chpasswd && \
     useradd -m -s /bin/bash cotton && echo 'cotton:killed_fiddy' | chpasswd && \
     useradd -m -s /bin/bash kahn && echo 'kahn:laotian' | chpasswd
 
-RUN echo "FLAG{shellshock_bash_cve_2014_6271}" > /home/kahn/flag.txt
-
 # Set up SUID binary for privilege escalation
 RUN chmod u+s /usr/bin/find
-
-# Copy flags directory and randomly place image in a user's home
-COPY flags/ /tmp/flags/
-RUN /bin/bash -c 'USERS=("boomhauer" "cotton" "kahn") && \
-    RANDOM_USER=${USERS[$RANDOM % ${#USERS[@]}]} && \
-    cp /tmp/flags/*.jpg /home/$RANDOM_USER/ && \
-    chown $RANDOM_USER:$RANDOM_USER /home/$RANDOM_USER/*.jpg'
-
 
 # Copy web content
 COPY index.html /var/www/html/index.html

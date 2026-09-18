@@ -35,7 +35,6 @@ echo "# Ping the service center\n";
 echo "ping 192.168.100.20\n\n";
 echo "# Browse to the web service\n";
 echo "curl http://192.168.100.20\n";
-echo "wget http://192.168.100.20/service_flag.txt\n\n";
 echo "# SSH to the service center\n";
 echo "ssh propane_tech@192.168.100.20\n";
 echo "</pre>";

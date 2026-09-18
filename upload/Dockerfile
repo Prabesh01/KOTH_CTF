@@ -15,31 +15,16 @@ RUN apt-get update && \
 COPY website/ /var/www/html/
 COPY start.sh /start.sh
 
-# Copy King of the Hill hidden service (not started by default)
-COPY kingofthehill/ /var/www/kingofthehill/
-
 # Create uploads directory and set permissions
 RUN mkdir -p /var/www/html/uploads && \
     chmod 777 /var/www/html/uploads && \
     chown -R www-data:www-data /var/www/html/ && \
-    chmod +x /start.sh && \
-    chmod +x /var/www/kingofthehill/start_koth.sh && \
-    chown -R www-data:www-data /var/www/kingofthehill/
+    chmod +x /start.sh
 
 # Create King of the Hill themed users
 RUN useradd -m -s /bin/bash minh && echo 'minh:ocean_walker' | chpasswd && \
     useradd -m -s /bin/bash connie && echo 'connie:violin_prodigy' | chpasswd && \
     useradd -m -s /bin/bash buckley && echo 'buckley:angel' | chpasswd
-
-# Copy flags directory and randomly place image in a user's home
-COPY flags/ /tmp/flags/
-RUN /bin/bash -c 'USERS=("minh" "connie" "buckley") && \
-    RANDOM_USER=${USERS[$RANDOM % ${#USERS[@]}]} && \
-    cp /tmp/flags/*.jpg /home/$RANDOM_USER/ && \
-    chown $RANDOM_USER:$RANDOM_USER /home/$RANDOM_USER/*.jpg'
-
-RUN echo "FLAG{Kahn_JR_I_DONT_HEAR_ANY_BEAUTIFUL_MUSIC}" > /root/root.txt
-RUN echo "FLAG{WHO_IS_DERK_WHAT_IS_A_RAPID_RELEASE_SUPPLEMENT_WHERE_IS_YOUR_PUMP_AND_WHY_IS_DERK_TRYING_TO_MAX_IT}" > /flag.txt
 
 # Expose ports 80 (main service) and 8080 (hidden King of the Hill service)
 # --- KotH tag target. This file is intentionally writable by whoever

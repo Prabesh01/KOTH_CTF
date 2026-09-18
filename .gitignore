@@ -31,6 +31,6 @@ client_configs/
 # Ignore Docker build context
 .dockerignore
 
-openvpn-data/
+openvpn-server/openvpn-data/
 client_configs/
 scoreboard/data/scoreboard.db

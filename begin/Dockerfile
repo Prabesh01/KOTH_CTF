@@ -22,8 +22,6 @@ RUN chown -R www-data:www-data /var/www/html && \
 
 RUN echo "root:toor" | chpasswd
 
-RUN echo "FLAG{BWAAHAA}" > /root/flag.txt && \
-    chmod 644 /root/flag.txt
 # Configure SSH to allow root login
 RUN mkdir /var/run/sshd && \
     echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && \
@@ -35,14 +33,6 @@ RUN useradd -m -s /bin/bash hank && echo 'hank:propane123' | chpasswd && \
     useradd -m -s /bin/bash dale && echo 'dale:conspiracy' | chpasswd && \
     useradd -m -s /bin/bash bill && echo 'bill:army' | chpasswd
 
-# Copy flags directory and randomly place image in a user's home
-COPY flags/ /tmp/flags/
-RUN /bin/bash -c 'USERS=("hank" "dale" "bill") && \
-    RANDOM_USER=${USERS[$RANDOM % ${#USERS[@]}]} && \
-    cp /tmp/flags/*.jpg /home/$RANDOM_USER/ && \
-    chown $RANDOM_USER:$RANDOM_USER /home/$RANDOM_USER/*.jpg'
-
-RUN echo "FLAG{THREE_TOED_OPPOSUM_BABY}" > /home/bill/flag.txt
 # Copy startup script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh

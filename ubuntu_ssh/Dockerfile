@@ -16,10 +16,6 @@ RUN echo 'root:toor' | chpasswd && \
 # Create second SSH config for port 2222
 COPY sshd_config_2222 /etc/ssh/sshd_config_2222
 
-# Create flag file
-RUN echo "FLAG{multiple_ssh_ports}" > /root/flag.txt && \
-    chmod 600 /root/flag.txt
-
 # Create King of the Hill themed users
 RUN useradd -m -s /bin/bash strickland && echo 'strickland:sweet_lady_propane' | chpasswd && \
     useradd -m -s /bin/bash joe_jack && echo 'joe_jack:mechanic' | chpasswd && \
@@ -41,15 +37,6 @@ RUN mkdir -p /opt/scripts && \
     chmod 755 /opt/scripts/runner.sh && \
     chown root:root /opt/scripts/runner.sh && \
     echo '@reboot root nohup /opt/scripts/runner.sh > /dev/null 2>&1 &' >> /etc/crontab
-
-RUN echo "FLAG{THAT_BOY_AINT_RIGHT}" > /home/strickland/flag_hank.txt
-
-# Copy flags directory and randomly place image in a user's home
-COPY flags/ /tmp/flags/
-RUN /bin/bash -c 'USERS=("strickland" "joe_jack" "enrique") && \
-    RANDOM_USER=${USERS[$RANDOM % ${#USERS[@]}]} && \
-    cp /tmp/flags/*.jpg /home/$RANDOM_USER/ && \
-    chown $RANDOM_USER:$RANDOM_USER /home/$RANDOM_USER/*.jpg'
 
 # Expose ports
 # --- KotH tag target. This file is intentionally writable by whoever

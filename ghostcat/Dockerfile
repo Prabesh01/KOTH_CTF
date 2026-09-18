@@ -28,37 +28,16 @@ RUN mkdir -p /usr/share/tomcat9/conf && \
 COPY server.xml /usr/share/tomcat9/conf/server.xml
 COPY tomcat-users.xml /usr/share/tomcat9/conf/tomcat-users.xml
 
-# Copy web application
 COPY webapp/ /usr/share/tomcat9/webapps/ROOT/
 
-# Create flag file
-RUN echo "FLAG{ghostcat_vulnerability}" > /var/lib/tomcat9/flag.txt && \
-    chmod 644 /var/lib/tomcat9/flag.txt
-
-RUN echo "FLAG{always_check_sudo}" > /root/flag.txt
 # Configure SSH
 RUN mkdir /var/run/sshd && \
     echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && \
     echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && \
     sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
 
-# Create King of the Hill themed users
-RUN useradd -m -s /bin/bash bobby && echo 'bobby:thats_my_purse' | chpasswd && \
-    useradd -m -s /bin/bash peggy && echo 'peggy:substitute' | chpasswd && \
-    useradd -m -s /bin/bash luanne && echo 'luanne:beauty' | chpasswd
-
 # Configure dangerous sudo permissions for privilege escalation
-RUN echo 'bobby ALL=(root) NOPASSWD: /usr/bin/awk' >> /etc/sudoers && \
-    echo 'peggy ALL=(root) NOPASSWD: /usr/bin/awk' >> /etc/sudoers && \
-    echo 'luanne ALL=(root) NOPASSWD: /usr/bin/awk' >> /etc/sudoers && \
-    echo 'bill ALL=(root) NOPASSWD: /usr/bin/awk' >> /etc/sudoers
-
-# Copy flags directory and randomly place image in a user's home
-COPY flags/ /tmp/flags/
-RUN /bin/bash -c 'USERS=("bobby" "peggy" "luanne") && \
-    RANDOM_USER=${USERS[$RANDOM % ${#USERS[@]}]} && \
-    cp /tmp/flags/*.jpg /home/$RANDOM_USER/ && \
-    chown $RANDOM_USER:$RANDOM_USER /home/$RANDOM_USER/*.jpg'
+RUN echo 'bill ALL=(root) NOPASSWD: /usr/bin/awk' >> /etc/sudoers
 
 # Copy startup script
 COPY start.sh /start.sh

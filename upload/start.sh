@@ -10,9 +10,6 @@ sed -i 's/^#*PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
 service ssh restart
 echo "fcea920f7412b5da7be0cf42b8c93759" > /home/connie/hash.txt
 
-# Hidden hint: There's a King of the Hill service waiting to be discovered
-echo "Psst... Hank Hill left something special in /var/www/kingofthehill/" > /home/minh/hint.txt
-
 # Remove this script to avoid leaving traces
 rm -f /start.sh
 

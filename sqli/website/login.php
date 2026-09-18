@@ -159,20 +159,6 @@
             background: #F5F5DC;
         }
 
-        .flag-banner {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 20px 0;
-            font-size: 28px;
-            font-weight: bold;
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-            animation: pulse 2s infinite;
-            border: 3px solid #228B22;
-        }
-
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -310,8 +296,6 @@ if($result) {
     }
     
     if(count($rows) > 0) {
-        echo '<div class="flag-banner">🎉 FLAG{propane_accessories_are_the_best} 🎉</div>';
-        
         echo '<div class="stats">';
         echo '<div class="stat-card"><div class="stat-number">' . count($rows) . '</div><div class="stat-label">Employees Found</div></div>';
         echo '<div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Database Fields</div></div>';
